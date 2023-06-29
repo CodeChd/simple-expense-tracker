@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
-import { CanceledError } from "../services/api-client";
-import { useState, useEffect } from "react";
 import userService, { ResData } from "../services/userService";
+import useUsers from "../services/useUsers";
 
 const Loading = styled.p`
   font-size: 1rem;
@@ -9,24 +8,9 @@ const Loading = styled.p`
 `;
 
 const Fake = () => {
-  const [users, setUsers] = useState<ResData[]>([]);
-  const [errMsg, setErrMsg] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const { request, cancel } = userService.getAll<ResData>();
-    request
-      .then((data) => {
-        setUsers(data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setErrMsg(err.message);
-      });
-
-    return () => cancel();
-  }, []);
+ //custom hook
+  const  {users, errMsg, loading, setUsers, setErrMsg} = useUsers();
+ 
 
   const deleteUser = (user: ResData) => {
     setUsers(users.filter((users) => users.id !== user.id));
